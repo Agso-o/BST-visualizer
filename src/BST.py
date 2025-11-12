@@ -52,20 +52,18 @@ class bst: #Classe da Árvore Binária de Busca
 # --------------------------------------------------------------------------------------- #
     def altura(self): #Retorna a altura da Árvore 
         if(self.raiz == None):
-            return -1
+            return -1 # Altura de árvore vazia é -1
         
         return self.altRecursivo(self.raiz)
     
-    def altRecursivo(self, atual): #Função auxiliar para cálculo da altura recursivamente
-        alte = 0 #Armazena a altura máxima dos dois lado, esquerdo e direito.
-        altd = 0
-        if(atual.esq != None): #Caso existam Nós a esquerda, atribue o valor
-            alte = self.altRecursivo(atual.esq)
+    def altRecursivo(self, atual): 
+        if atual is None:
+            return -1 # Um nó nulo (filho de uma folha) tem altura -1
 
-        if(atual.dir != None): #Caso existam Nós a direita, atribue o valor
-            altd = self.altRecursivo(atual.dir)
+        alte = self.altRecursivo(atual.esq)
+        altd = self.altRecursivo(atual.dir)
 
-        return max(alte, altd)+1 #Retorna a maior das duas alturas +1 do nó atual para o nó pai
+        return 1 + max(alte, altd) # Retorna a maior das duas alturas +1
     
 # --------------------------------------------------------------------------------------- #
     def comprimento(self): #Retorna o comprimento da Árvore, atualizado a cada inserção que ocorre
@@ -77,7 +75,7 @@ class bst: #Classe da Árvore Binária de Busca
 # --------------------------------------------------------------------------------------- #
     def menor(self): #Retorna a menor key da Árvore 
         if(self.raiz == None):
-            return -1
+            return None 
         
         return self.minRecursivo(self.raiz)
     
@@ -85,12 +83,11 @@ class bst: #Classe da Árvore Binária de Busca
         if(atual.esq == None):
             return atual.key
         
-        return self.minRecursivo(atual.esq) #Retorna a key do nó mais profundo sempre a esquerda, a menor devido a ordenação da Árvore
-
+        return self.minRecursivo(atual.esq) #Retorna a key do nó mais profundo sempre a esquerda
 # --------------------------------------------------------------------------------------- #
     def maior(self): #Retorna a maior key da Árvore 
         if(self.raiz == None):
-            return -1
+            return None 
         
         return self.maxRecursivo(self.raiz)
     
@@ -98,32 +95,39 @@ class bst: #Classe da Árvore Binária de Busca
         if(atual.dir == None):
             return atual.key
         
-        return self.maxRecursivo(atual.dir) #Retorna a key do nó mais profundo sempre a direita, a maior devido a ordenação da Árvore
-
+        return self.maxRecursivo(atual.dir) #Retorna a key do nó mais profundo sempre a direita
+    
 # --------------------------------------------------------------------------------------- #
     def balanceada(self): #Retorna um boolean que indica se a árvore é balanceada ou não.
-                          # O critério é a balanceada AVL, no qual todos as diferenças 
-                          # absolutas de tamanho de duas subávores não pode ser maior do que 1.
         if(self.raiz == None):
-            return -1
-        
-        return(self.balRecursiva(self.raiz)[1] <= 1)
+            return True # Árvore vazia é balanceada)
+        return self.balRecursiva(self.raiz)[1]
     
-    def balRecursiva(self, atual): #Função auxiliar para encontrar a maior diferença absoluta de tamanho de duas subárvores
-        tesq = [0, 0] # Cada tupla guarda informações das subávores esquerda e direita:
-        tdir = [0, 0] # Tamanho da subávore e maior AVL daquela subárvore
-        if(atual.esq != None):
-            tesq = self.balRecursiva(atual.esq)
+    def balRecursiva(self, atual): 
+        # Função auxiliar que retorna uma tupla: (altura_do_no_atual, arvore_esta_balanceada)
+        if atual is None:
+            return (-1, True) # Nó nulo tem altura -1 e é balanceado
 
-        if(atual.dir != None):
-            tdir = self.balRecursiva(atual.dir)
+        # Verifica sub-árvore esquerda
+        alt_esq, bal_esq = self.balRecursiva(atual.esq)
+        if not bal_esq:
+            return (0, False) # Propaga o desbalanceamento
 
+        # Verifica sub-árvore direita
+        alt_dir, bal_dir = self.balRecursiva(atual.dir)
+        if not bal_dir:
+            return (0, False) # Propaga o desbalanceamento
 
-        avl = abs(tdir[0] - tesq[0]) #Calcula o AVL do nó atual
+        # Verifica o nó atual
+        fator_balanceamento = abs(alt_esq - alt_dir)
+        no_atual_esta_balanceado = (fator_balanceamento <= 1)
+        
+        # A árvore só está balanceada se ESQ, DIR e ATUAL estiverem balanceados
+        arvore_esta_balanceada = bal_esq and bal_dir and no_atual_esta_balanceado
 
-        return [tesq[0]+tdir[0]+1, max(avl, tdir[1], tesq[1])]
-        #Retorna um tupla com o tamanho dessa subárvore e com o maior AVL presente nela.
+        altura_atual = 1 + max(alt_esq, alt_dir)
 
+        return (altura_atual, arvore_esta_balanceada)
 # --------------------------------------------------------------------------------------- #
 
     def level(self): #Retorna uma lista com os elementos em ordem de nível, da esquerda pra direita
@@ -147,7 +151,7 @@ class bst: #Classe da Árvore Binária de Busca
 
     def emOrdem(self): #Retorna uma lista com os elementos em ordem, da esquerda pra direita
         if(self.raiz == None):
-            return -1
+            return []
 
         self.ans = []
         self.auxEmOrdem(self.raiz)
@@ -167,7 +171,7 @@ class bst: #Classe da Árvore Binária de Busca
 
     def preOrdem(self): #Retorna uma lista com os elementos em Pré-ordem, da esquerda pra direita
         if(self.raiz == None):
-            return -1
+            return []
 
         self.ans = []
         self.auxPreOrdem(self.raiz)
@@ -187,7 +191,7 @@ class bst: #Classe da Árvore Binária de Busca
 
     def posOrdem(self): #Retorna uma lista com os elementos em Pós-ordem, da esquerda pra direita
         if(self.raiz == None):
-            return -1
+            return []
 
         self.ans = []
         self.auxPosOrdem(self.raiz)
@@ -209,7 +213,7 @@ class bst: #Classe da Árvore Binária de Busca
     def plotar(self): #Retorna uma lista com os elementos a serem plotados, das primeiras 7 posições.
                       #Se estiverem vazias, a posição terá None
         if(self.raiz == None):
-            return -1
+            return [None] * 7
 
         ans = [None] *7
         ans[0] = self.raiz.key
