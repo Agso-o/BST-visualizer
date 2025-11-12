@@ -21,9 +21,10 @@ Este projeto tem como objetivo **simular o funcionamento de uma árvore binária
 ---
 
 ## ⚙️ Funcionalidades
--
-- 
--
+- Adicionar elemento
+- Plotar o desenho da árvore
+- Mostrar informações sobre a árvore 
+- Mostrar travessias 
 ---
 ## Como testar
 Com python instalado:
