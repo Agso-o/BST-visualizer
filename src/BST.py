@@ -132,7 +132,7 @@ class bst: #Classe da Árvore Binária de Busca
 
     def level(self): #Retorna uma lista com os elementos em ordem de nível, da esquerda pra direita
         if(self.raiz == None):
-            return -1
+            return []
         
         fila = [] #Utiliza uma list com pop(0) afim de simular um estrutura FIFO
         ans = []

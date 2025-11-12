@@ -63,12 +63,16 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(widget)  # Renderiza esse widget generico que foi criado 
     
     def plotarArvore(self):
-        # 1. Verifica se a árvore está vazia
+        if self.bst_manager.altura() > 2:
+            QMessageBox.warning(self, "Árvore Muito Alta", 
+                                f"A árvore não pode ser plotada pois sua altura ({self.bst_manager.altura()}) é maior que 2.")
+            return
+        # Verifica se a árvore está vazia
         if self.bst_manager.raiz is None:
             QMessageBox.warning(self, "Árvore Vazia", "Não há nada para plotar. Adicione elementos primeiro.")
             return
 
-        # 2. Cria e exibe a nova janela de plotagem
+        # Cria e exibe a nova janela de plotagem
         # Passamos a raiz da nossa árvore para a janela
         self.plot_window = PlotWindow(self.bst_manager.raiz)
         self.plot_window.show()
@@ -122,7 +126,63 @@ class MyWindow(QMainWindow):
         self.setCentralWidget(widget)
 
     def mostrarTravessias(self):
-        pass  
+        # 1. Cria a nova "página" (widget) do zero
+        widget = QWidget()
+        layout = QVBoxLayout(widget) # Layout principal vertical
+        layout.setSpacing(10)
+        layout.setContentsMargins(15, 15, 15, 15)
+        
+        grid_layout = QGridLayout() # Layout em grid para as 4 listas
+        font_title = QFont("Arial", 11, QFont.Weight.Bold)
+
+        # 2. Coleta os dados ATUALIZADOS
+        pre_ordem = self.bst_manager.preOrdem()
+        em_ordem = self.bst_manager.emOrdem()
+        pos_ordem = self.bst_manager.posOrdem()
+        level_ordem = self.bst_manager.level()
+        
+        # Helper para criar e preencher uma coluna de lista
+        def add_list_column(col, title, data):
+            title_label = QLabel(title)
+            title_label.setFont(font_title)
+            title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            
+            list_widget = QListWidget()
+            
+            # --- Verificação de Segurança ---
+            # Checa se 'data' é uma lista (como []) e não um int (como -1)
+            # Isso garante que o app não quebre se algum método de BST.py
+            # não for corrigido para retornar [] em caso de árvore vazia.
+            if isinstance(data, list):
+                if not data: # Lista está vazia
+                    list_widget.addItem("Árvore Vazia")
+                else:
+                    # Adiciona todos os itens da lista
+                    list_widget.addItems([str(item) for item in data])
+            else:
+                # Se 'data' for -1 (ou outro erro), trata como vazia
+                list_widget.addItem("Árvore Vazia") 
+            
+            grid_layout.addWidget(title_label, 0, col)
+            grid_layout.addWidget(list_widget, 1, col)
+
+        # 3. Cria as 4 colunas com os dados
+        add_list_column(0, "Pré-Ordem", pre_ordem)
+        add_list_column(1, "Em-Ordem", em_ordem)
+        add_list_column(2, "Pós-Ordem", pos_ordem)
+        add_list_column(3, "Level Order", level_ordem)
+        
+        layout.addLayout(grid_layout) # Adiciona o grid de listas
+
+        # 4. Botão de Voltar
+        btn_back = QPushButton("Voltar ao Menu")
+        btn_back.setFont(QFont("Arial", 12))
+        btn_back.setFixedSize(150, 40)
+        btn_back.clicked.connect(self.showMainMenu) # Ação: Chama o menu principal
+        layout.addWidget(btn_back, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        # 5. Define a nova página como o widget central
+        self.setCentralWidget(widget)
 
     def adicionarElemento(self):
         numero, ok = QInputDialog.getInt(self, "Adicionar Elemento", "Digite a chave (número natural):", 0, 0)
