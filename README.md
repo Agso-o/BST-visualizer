@@ -4,6 +4,7 @@
 ![Git](https://img.shields.io/badge/Git-Versionamento-orange?logo=git&logoColor=white)
 
 Este projeto tem como objetivo **simular o funcionamento de uma árvore binária de busca**, com foco na **prática de conceitos de Estrutura de Dados**.
+
 ---
 
 ## 👨‍💻 Integrantes do Grupo
@@ -29,5 +30,9 @@ Este projeto tem como objetivo **simular o funcionamento de uma árvore binária
 ## Como testar
 Com python instalado:
 ```bash
-
+git clone https://github.com/Ivan-V246/BST-visualizer.git
+cd BST-visualizer/
+pip install -r requirements.txt
+cd src/
+python main.py
 ```
