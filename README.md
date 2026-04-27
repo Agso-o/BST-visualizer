@@ -12,6 +12,9 @@ Este projeto tem como objetivo **simular o funcionamento de uma árvore binária
 - **Ivan Vitor Dias de Oliveira**  
 - **Antonio Gemesson Sousa de Oliveira**
 
+**Cadê a call de IHC?**
+**Requisitindo GMSO para IHC**
+
 ---
 
 ## 🛠️ Ferramentas Utilizadas
